@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "annotations": {
+      "azure.workload.identity/proxy-sidecar-port": "8080"
+    }
+  },
+  "spec": {
+    "tolerations": [
+      {
+        "key": "CriticalAddonsOnly",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoExecute",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoSchedule",
+        "operator": "Exists"
+      }
+    ]
+  }
+}
