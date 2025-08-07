@@ -164,31 +164,33 @@ Put the following contents into Instance config under "Advanced config":
 
 ```json
 {
-  "metadata": {
-    "annotations": {
-      "azure.workload.identity/proxy-sidecar-port": "8080"
+    "metadata": {
+        "annotations": {
+            "azure.workload.identity/proxy-sidecar-port": "8080"
+        }
+    },
+    "spec": {
+        "tolerations": [
+            {
+                "effect": "NoSchedule",
+                "operator": "Exists",
+                "key": "node.anyscale.com/capacity-type"
+            },
+            {
+                "effect": "NoSchedule",
+                "key": "nvidia.com/gpu"
+            },
+            {
+                "effect": "NoSchedule",
+                "key": "node.anyscale.com/accelerator-type"
+            },
+            {
+                "effect": "NoSchedule",
+                "key": "kubernetes.azure.com/scalesetpriority",
+                "operator": "Exists"
+            }
+        ]
     }
-  },
-  "spec": {
-    "tolerations": [
-      {
-        "key": "node.anyscale.com/capacity-type",
-        "effect": "NoSchedule"
-      },
-      {
-        "key": "nvidia.com/gpu",
-        "effect": "NoSchedule"
-      },
-      {
-        "key": "node.anyscale.com/accelerator-type",
-        "effect": "NoSchedule"
-      },
-      {
-        "key": "kubernetes.azure.com/scalesetpriority",
-        "effect": "NoSchedule"
-      }
-    ]
-  }
 }
 ```
 

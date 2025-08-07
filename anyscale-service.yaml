@@ -1,0 +1,59 @@
+# anyscale service deploy -n llm -f anyscale-service.yaml
+name: llm
+image_uri: anyscale/ray-llm:2.46.0-py311-cu124 # Replace with your own image
+cloud: k8s-cluster # Replace with your own registered cloud name
+query_auth_token_enabled: true
+working_dir: .
+
+compute_config:
+  cloud: k8s-cluster # Replace with your own registered cloud name
+  head_node:
+    instance_type: 2CPU-8GB
+  worker_nodes:
+    - instance_type: 22CPU-100GB-1xA100
+      advanced_instance_config:
+        spec:
+          tolerations:
+            - effect: NoSchedule
+              operator: "Exists"
+              key: "node.anyscale.com/capacity-type"
+            - effect: NoSchedule
+              key: "nvidia.com/gpu"
+            - effect: NoSchedule
+              key: "node.anyscale.com/accelerator-type"
+            - effect: NoSchedule
+              key: "kubernetes.azure.com/scalesetpriority"
+              operator: "Exists"
+        metadata:
+          annotations:
+            azure.workload.identity/proxy-sidecar-port: '8080'
+      flags: {}
+      name: 22CPU-100GB-1xA100
+      min_nodes: 0
+      max_nodes: 10
+      market_type: PREFER_SPOT # or ON_DEMAND
+  enable_cross_zone_scaling: false
+  advanced_instance_config:
+    metadata:
+      annotations:
+        azure.workload.identity/proxy-sidecar-port: '8080'
+  flags:
+    allow-cross-zone-autoscaling: false
+
+applications:
+  - name: llm-endpoint
+    import_path: ray.serve.llm:build_openai_app
+    route_prefix: /
+    args:
+      llm_configs:
+      - accelerator_type: A100
+        deployment_config: {}
+        engine_kwargs:
+          tensor_parallel_size: 1
+          max_model_len: 100000
+        model_loading_config:
+          model_id: Qwen/Qwen3-30B-A3B-Instruct-2507      # Replace model id
+          model_source: Qwen/Qwen3-30B-A3B-Instruct-2507  # Replace model id
+        runtime_env:
+          env_vars:
+            HF_TOKEN: "<HF_TOKEN>" # Replace with your own HF token
