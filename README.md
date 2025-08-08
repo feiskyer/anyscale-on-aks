@@ -149,7 +149,7 @@ Go to [Container Images](https://console.anyscale.com/container-images), click "
 # MUST use this base version as other versions won't work yet
 FROM anyscale/ray-llm:2.46.0-py311-cu124
 
-RUN pip install --no-cache-dir --upgrade azure-storage-blob azure-identity smart_open[azure] httpx
+RUN pip install --no-cache-dir azure-storage-blob azure-identity smart_open[azure] -c /home/ray/requirements_compiled.txt
 ```
 
 ### Serve LLM locally in your workspace
