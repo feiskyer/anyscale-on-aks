@@ -296,6 +296,10 @@ client = OpenAI(base_url="https://<your-endpoint-id>.s.anyscaleuserdata.com/v1/"
 # Other codes...
 ```
 
+### Full Service spec
+
+Actually, the service could also be deployed without running inside the workspace, refer [anyscale-service.yaml](anyscale-service.yaml) for a full service spec that could be deployed from your local machine (you'd need to replace some of your configs inside it).
+
 ## Known issues
 
 Here are a set of known issues why deploying steps are so complicated.
